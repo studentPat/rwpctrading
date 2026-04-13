@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Phone, Mail, Facebook, ExternalLink } from "lucide-react";
+import { MessageCircle, Phone, Mail, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 
 interface InquiryModalProps {
