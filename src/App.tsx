@@ -19,6 +19,7 @@ import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminInventory from "@/pages/admin/AdminInventory";
 import AdminReviews from "@/pages/admin/AdminReviews";
 import AdminFeedback from "@/pages/admin/AdminFeedback";
+import AdminServices from "@/pages/admin/AdminServices";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="inventory" element={<AdminInventory />} />
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="feedback" element={<AdminFeedback />} />
+              <Route path="services" element={<AdminServices />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

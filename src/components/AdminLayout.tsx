@@ -5,7 +5,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Package, FolderOpen, Boxes, Star, MessageSquare, LogOut, Monitor } from "lucide-react";
+import { LayoutDashboard, Package, FolderOpen, Boxes, Star, MessageSquare, LogOut, Monitor, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 
@@ -14,6 +14,7 @@ const adminLinks = [
   { to: "/admin/products", label: "Products", icon: Package },
   { to: "/admin/categories", label: "Categories", icon: FolderOpen },
   { to: "/admin/inventory", label: "Inventory", icon: Boxes },
+  { to: "/admin/services", label: "Services", icon: Wrench },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/feedback", label: "Feedback", icon: MessageSquare },
 ];
