@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Phone, Mail, Facebook } from "lucide-react";
+import { MessageCircle, Phone, Mail, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 
 interface InquiryModalProps {
@@ -42,7 +42,7 @@ export default function InquiryModal({ productName, trigger }: InquiryModalProps
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-3 rounded-lg bg-accent hover:bg-accent/80 transition-colors"
           >
-            <Facebook className="h-5 w-5 text-primary" />
+            <ExternalLink className="h-5 w-5 text-primary" />
             <div>
               <p className="font-medium text-sm">Facebook</p>
               <p className="text-xs text-muted-foreground">Visit our Facebook page</p>
