@@ -144,7 +144,7 @@ export default function PublicLayout() {
                 <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> rwpctrading@email.com</p>
                 <p className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Your Address Here</p>
                 <a href="https://facebook.com/rwpctrading" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-sidebar-foreground transition-colors">
-                  <Facebook className="h-4 w-4" /> RW PC Trading
+                  <ExternalLink className="h-4 w-4" /> RW PC Trading
                 </a>
               </div>
             </div>

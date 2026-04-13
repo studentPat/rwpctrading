@@ -78,7 +78,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
-                  <Facebook className="h-5 w-5 text-primary" />
+                  <ExternalLink className="h-5 w-5 text-primary" />
                 </div>
                 <div>
                   <p className="font-medium text-sm">Facebook</p>
