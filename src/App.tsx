@@ -3,24 +3,62 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { AuthProvider } from "@/hooks/useAuth";
+import PublicLayout from "@/components/PublicLayout";
+import AdminLayout from "@/components/AdminLayout";
+import HomePage from "@/pages/HomePage";
+import CatalogPage from "@/pages/CatalogPage";
+import ProductDetailsPage from "@/pages/ProductDetailsPage";
+import ServicesPage from "@/pages/ServicesPage";
+import ReviewsPage from "@/pages/ReviewsPage";
+import ContactPage from "@/pages/ContactPage";
+import LoginPage from "@/pages/LoginPage";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminProducts from "@/pages/admin/AdminProducts";
+import AdminCategories from "@/pages/admin/AdminCategories";
+import AdminInventory from "@/pages/admin/AdminInventory";
+import AdminReviews from "@/pages/admin/AdminReviews";
+import AdminFeedback from "@/pages/admin/AdminFeedback";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Public routes */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/catalog" element={<CatalogPage />} />
+              <Route path="/catalog/:id" element={<ProductDetailsPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+            </Route>
+
+            {/* Auth */}
+            <Route path="/login" element={<LoginPage />} />
+
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="inventory" element={<AdminInventory />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="feedback" element={<AdminFeedback />} />
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
