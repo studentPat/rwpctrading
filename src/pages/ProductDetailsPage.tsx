@@ -2,12 +2,14 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Monitor } from "lucide-react";
+import { ArrowLeft, Monitor, ChevronLeft, ChevronRight } from "lucide-react";
 import StockBadge from "@/components/StockBadge";
 import InquiryModal from "@/components/InquiryModal";
+import { useState } from "react";
 
 export default function ProductDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const [imgIdx, setImgIdx] = useState(0);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -21,6 +23,8 @@ export default function ProductDetailsPage() {
     },
     enabled: !!id,
   });
+
+  const images = product?.images?.filter(Boolean) ?? [];
 
   if (isLoading) {
     return (
@@ -50,12 +54,55 @@ export default function ProductDetailsPage() {
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Image */}
-        <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
-          {product.images && product.images.length > 0 ? (
-            <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
-          ) : (
-            <Monitor className="h-24 w-24 text-muted-foreground/20" />
+        {/* Image carousel */}
+        <div className="space-y-3">
+          <div className="relative aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+            {images.length > 0 ? (
+              <>
+                <img src={images[imgIdx]} alt={product.name} className="w-full h-full object-cover" />
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setImgIdx((p) => (p === 0 ? images.length - 1 : p - 1))}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur flex items-center justify-center shadow hover:bg-background transition"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => setImgIdx((p) => (p === images.length - 1 ? 0 : p + 1))}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/80 backdrop-blur flex items-center justify-center shadow hover:bg-background transition"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {images.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setImgIdx(i)}
+                          className={`w-2.5 h-2.5 rounded-full transition ${i === imgIdx ? "bg-primary" : "bg-background/60"}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <Monitor className="h-24 w-24 text-muted-foreground/20" />
+            )}
+          </div>
+          {/* Thumbnail strip */}
+          {images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setImgIdx(i)}
+                  className={`w-16 h-16 rounded-md overflow-hidden border-2 shrink-0 transition ${i === imgIdx ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 

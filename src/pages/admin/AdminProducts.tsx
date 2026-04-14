@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Pencil, Archive, Search } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Plus, Pencil, Archive, Search, Upload, X, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import StockBadge from "@/components/StockBadge";
 
@@ -35,6 +36,10 @@ export default function AdminProducts() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<ProductForm>(emptyForm);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: categories } = useQuery({
     queryKey: ["all-categories"],
@@ -54,9 +59,23 @@ export default function AdminProducts() {
     },
   });
 
+  const uploadImages = async (productId: string, files: File[]): Promise<string[]> => {
+    const urls: string[] = [];
+    for (const file of files) {
+      const ext = file.name.split(".").pop();
+      const path = `${productId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("product-images").upload(path, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+      urls.push(urlData.publicUrl);
+    }
+    return urls;
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
+      setUploading(true);
+      const payload: any = {
         name: form.name,
         category_id: form.category_id || null,
         brand: form.brand || null,
@@ -67,13 +86,25 @@ export default function AdminProducts() {
         warranty: form.warranty || null,
         stock_status: form.stock_status,
       };
+
       if (editing) {
+        let allImages = [...existingImages];
+        if (newFiles.length > 0) {
+          const uploaded = await uploadImages(editing.id, newFiles);
+          allImages = [...allImages, ...uploaded];
+        }
+        payload.images = allImages;
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("products").insert(payload);
+        const { data: created, error } = await supabase.from("products").insert(payload).select().single();
         if (error) throw error;
+        if (newFiles.length > 0 && created) {
+          const uploaded = await uploadImages(created.id, newFiles);
+          await supabase.from("products").update({ images: uploaded }).eq("id", created.id);
+        }
       }
+      setUploading(false);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
@@ -81,8 +112,13 @@ export default function AdminProducts() {
       setOpen(false);
       setForm(emptyForm);
       setEditing(null);
+      setExistingImages([]);
+      setNewFiles([]);
     },
-    onError: () => toast.error("Failed to save product"),
+    onError: () => {
+      setUploading(false);
+      toast.error("Failed to save product");
+    },
   });
 
   const archiveMutation = useMutation({
@@ -109,13 +145,25 @@ export default function AdminProducts() {
       warranty: p.warranty || "",
       stock_status: p.stock_status,
     });
+    setExistingImages(p.images?.filter(Boolean) ?? []);
+    setNewFiles([]);
     setOpen(true);
   };
 
   const openNew = () => {
     setEditing(null);
     setForm(emptyForm);
+    setExistingImages([]);
+    setNewFiles([]);
     setOpen(true);
+  };
+
+  const removeExistingImage = (idx: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const removeNewFile = (idx: number) => {
+    setNewFiles((prev) => prev.filter((_, i) => i !== idx));
   };
 
   return (
@@ -159,8 +207,58 @@ export default function AdminProducts() {
                   <SelectItem value="Out of Stock">Out of Stock</SelectItem>
                 </SelectContent>
               </Select>
-              <Button type="submit" disabled={saveMutation.isPending} className="w-full">
-                {saveMutation.isPending ? "Saving..." : "Save Product"}
+
+              <div>
+                <Label className="mb-2 block">Product Images</Label>
+                {existingImages.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {existingImages.map((url, i) => (
+                      <div key={i} className="relative w-20 h-20 rounded-md overflow-hidden border group">
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => removeExistingImage(i)}
+                          className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {newFiles.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {newFiles.map((f, i) => (
+                      <div key={i} className="relative w-20 h-20 rounded-md overflow-hidden border group bg-muted">
+                        <img src={URL.createObjectURL(f)} alt="" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => removeNewFile(i)}
+                          className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files) setNewFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+                  }}
+                />
+                <Button type="button" variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
+                  <Upload className="h-4 w-4 mr-1" /> Add Images
+                </Button>
+              </div>
+
+              <Button type="submit" disabled={saveMutation.isPending || uploading} className="w-full">
+                {uploading ? "Uploading..." : saveMutation.isPending ? "Saving..." : "Save Product"}
               </Button>
             </form>
           </DialogContent>
@@ -176,6 +274,7 @@ export default function AdminProducts() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">Img</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Brand</TableHead>
               <TableHead>Category</TableHead>
@@ -186,9 +285,18 @@ export default function AdminProducts() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-8">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center py-8">Loading...</TableCell></TableRow>
             ) : products && products.length > 0 ? products.map((p) => (
               <TableRow key={p.id}>
+                <TableCell>
+                  {p.images && p.images.length > 0 ? (
+                    <img src={p.images[0]} alt="" className="w-10 h-10 rounded object-cover" />
+                  ) : (
+                    <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                      <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="font-medium">{p.name}</TableCell>
                 <TableCell className="text-sm">{p.brand || "—"}</TableCell>
                 <TableCell className="text-sm">{(p.categories as any)?.name || "—"}</TableCell>
@@ -204,7 +312,7 @@ export default function AdminProducts() {
                 </TableCell>
               </TableRow>
             )) : (
-              <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No products yet.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No products yet.</TableCell></TableRow>
             )}
           </TableBody>
         </Table>

@@ -15,6 +15,7 @@ export default function AdminReviews() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", rating: "5", comment: "" });
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const { data: reviews, isLoading } = useQuery({
     queryKey: ["admin-reviews"],
@@ -108,7 +109,15 @@ export default function AdminReviews() {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{r.comment || "—"}</TableCell>
+                <TableCell className="text-sm text-muted-foreground max-w-xs">
+                  <div
+                    className={expandedId === r.id ? "whitespace-pre-wrap" : "line-clamp-2 cursor-pointer"}
+                    onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
+                    title="Click to expand"
+                  >
+                    {r.comment || "—"}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <Switch checked={r.is_approved} onCheckedChange={(v) => toggleApproval.mutate({ id: r.id, is_approved: v })} />
                 </TableCell>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 
 export default function AdminFeedback() {
   const queryClient = useQueryClient();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const { data: feedback, isLoading } = useQuery({
     queryKey: ["admin-feedback"],
@@ -17,9 +19,9 @@ export default function AdminFeedback() {
     },
   });
 
-  const toggleDisplay = useMutation({
-    mutationFn: async ({ id, is_displayed }: { id: string; is_displayed: boolean }) => {
-      const { error } = await supabase.from("feedback").update({ is_displayed, is_approved: is_displayed }).eq("id", id);
+  const toggleApproved = useMutation({
+    mutationFn: async ({ id, is_approved }: { id: string; is_approved: boolean }) => {
+      const { error } = await supabase.from("feedback").update({ is_approved, is_displayed: is_approved }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-feedback"] }),
@@ -48,7 +50,7 @@ export default function AdminFeedback() {
               <TableHead>Email</TableHead>
               <TableHead>Message</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Display</TableHead>
+              <TableHead>Approved</TableHead>
               <TableHead className="w-20">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -59,10 +61,18 @@ export default function AdminFeedback() {
               <TableRow key={f.id}>
                 <TableCell className="font-medium">{f.name}</TableCell>
                 <TableCell className="text-sm">{f.email || "—"}</TableCell>
-                <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{f.message}</TableCell>
+                <TableCell className="text-sm text-muted-foreground max-w-xs">
+                  <div
+                    className={expandedId === f.id ? "whitespace-pre-wrap" : "line-clamp-2 cursor-pointer"}
+                    onClick={() => setExpandedId(expandedId === f.id ? null : f.id)}
+                    title="Click to expand"
+                  >
+                    {f.message}
+                  </div>
+                </TableCell>
                 <TableCell className="text-xs text-muted-foreground">{new Date(f.created_at).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Switch checked={f.is_displayed} onCheckedChange={(v) => toggleDisplay.mutate({ id: f.id, is_displayed: v })} />
+                  <Switch checked={f.is_approved} onCheckedChange={(v) => toggleApproved.mutate({ id: f.id, is_approved: v })} />
                 </TableCell>
                 <TableCell>
                   <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(f.id)}>
