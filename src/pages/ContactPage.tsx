@@ -5,8 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Phone, Mail, MapPin, ExternalLink, Send } from "lucide-react";
+import { MessageCircle, Phone, Mail, MapPin, ExternalLink, Send, Clock, CreditCard } from "lucide-react";
 import { toast } from "sonner";
+
+const FB_PAGE = "https://www.facebook.com/profile.php?id=61575260983217";
+const MESSENGER = "https://m.me/61575260983217";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -36,8 +39,9 @@ export default function ContactPage() {
   return (
     <div>
       {/* Header */}
-      <div className="bg-primary text-primary-foreground py-12">
-        <div className="container mx-auto px-4 text-center">
+      <div className="relative bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiLz48cGF0aCBkPSJNMjAgMjBtLTEgMGExIDEgMCAxIDAgMiAwYTEgMSAwIDEgMC0yIDB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9nPjwvc3ZnPg==')] opacity-50" />
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">Contact Us</h1>
           <p className="opacity-80">Have a question? We'd love to hear from you.</p>
         </div>
@@ -55,7 +59,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-sm">Phone</p>
-                  <a href="tel:+639000000000" className="text-sm text-primary hover:underline">+63 XXX XXX XXXX</a>
+                  <a href="tel:09687262353" className="text-sm text-primary hover:underline">09687262353</a>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -64,7 +68,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-sm">Email</p>
-                  <a href="mailto:rwpctrading@email.com" className="text-sm text-primary hover:underline">rwpctrading@email.com</a>
+                  <a href="mailto:rwpctrading@gmail.com" className="text-sm text-primary hover:underline">rwpctrading@gmail.com</a>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -73,7 +77,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-sm">Address</p>
-                  <p className="text-sm text-muted-foreground">Your Address Here</p>
+                  <p className="text-sm text-muted-foreground">Unit 2B 2nd Floor One Santiago Place Building, Gov. I. Santiago St., Brgy. Malinta, Valenzuela City</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -82,7 +86,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-sm">Facebook</p>
-                  <a href="https://facebook.com/rwpctrading" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">RW PC Trading</a>
+                  <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">RW PC Trading</a>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -91,7 +95,25 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-sm">Messenger</p>
-                  <a href="https://m.me/rwpctrading" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Message us on Facebook</a>
+                  <a href={MESSENGER} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">Message us on Facebook</a>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                  <Clock className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Operating Hours</p>
+                  <p className="text-sm text-muted-foreground">Monday – Saturday, 9:00 AM – 7:00 PM</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center shrink-0">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Installment Available</p>
+                  <p className="text-sm text-muted-foreground">Via Salmon Financing, Credit Card (Mastercard, Visa, JCB) or E-Wallet (GCash, Maya, ShopeePay, GrabPay, AliPay, etc.)</p>
                 </div>
               </div>
             </div>

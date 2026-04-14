@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Monitor, Wrench, ShieldCheck, ArrowRight, Star, Laptop, Settings, Paintbrush, Cpu } from "lucide-react";
+import { Monitor, Wrench, ShieldCheck, ArrowRight, Star, Cpu, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -9,14 +9,11 @@ import StockBadge from "@/components/StockBadge";
 import InquiryModal from "@/components/InquiryModal";
 import heroBg from "@/assets/hero-bg.jpg";
 
-const iconMap: Record<string, any> = {
-  Wrench, Monitor, Laptop, Settings, Paintbrush, Cpu,
-};
-
 const features = [
   { icon: Cpu, title: "Quality Parts", desc: "Brand-new components from trusted brands" },
   { icon: Wrench, title: "Expert Repairs", desc: "Professional technicians for any issue" },
   { icon: ShieldCheck, title: "Warranty Support", desc: "Products backed with warranty coverage" },
+  { icon: CreditCard, title: "Installment Available", desc: "Salmon Financing, Credit Card & E-Wallet" },
 ];
 
 export default function HomePage() {
@@ -59,12 +56,14 @@ export default function HomePage() {
     },
   });
 
+  const isIconUrl = (icon: string | null) => icon?.startsWith("http");
+
   return (
     <div>
-      {/* Hero with background image */}
+      {/* Hero */}
       <section className="relative text-primary-foreground py-24 md:py-36">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.85] to-[hsl(215,25%,12%)/0.6]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.9] to-[hsl(215,25%,12%)/0.6]" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -73,7 +72,7 @@ export default function HomePage() {
             className="max-w-2xl"
           >
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              Computer Repairs of Any Complexity
+              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">Computer Shop</span>
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8">
               Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
@@ -95,9 +94,9 @@ export default function HomePage() {
       </section>
 
       {/* Features strip */}
-      <section className="py-6 border-b bg-card">
+      <section className="py-6 border-b bg-card shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
@@ -121,7 +120,7 @@ export default function HomePage() {
 
       {/* Featured Products */}
       {featuredProducts && featuredProducts.length > 0 && (
-        <section className="py-16">
+        <section className="py-16 bg-gradient-to-b from-background to-accent/20">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="font-display text-2xl md:text-3xl font-bold">Featured Products</h2>
@@ -132,7 +131,7 @@ export default function HomePage() {
             <p className="text-muted-foreground mb-8">Browse our latest computer parts and accessories</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((p) => (
-                <Card key={p.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card key={p.id} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5 border-border/50">
                   <div className="relative aspect-square bg-muted flex items-center justify-center">
                     {p.images && p.images.length > 0 ? (
                       <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
@@ -169,31 +168,32 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Services Section */}
+      {/* Services */}
       {services && services.length > 0 && (
         <section className="py-16 bg-accent/30">
           <div className="container mx-auto px-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-center mb-2">Our Services</h2>
             <p className="text-muted-foreground text-center mb-10">Professional repair and installation services</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {services.map((s) => {
-                const IconComp = iconMap[s.icon] || Wrench;
-                return (
-                  <Card key={s.id} className="text-center hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-                        <IconComp className="h-7 w-7 text-primary" />
-                      </div>
-                      <h3 className="font-display font-semibold mb-2">{s.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{s.description}</p>
-                      <InquiryModal
-                        productName={s.title}
-                        trigger={<Button size="sm">Inquire Now</Button>}
-                      />
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {services.map((s) => (
+                <Card key={s.id} className="text-center hover:shadow-lg transition-all hover:-translate-y-0.5">
+                  <CardContent className="p-6">
+                    <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                      {isIconUrl(s.icon) ? (
+                        <img src={s.icon!} alt={s.title} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <Wrench className="h-7 w-7 text-primary" />
+                      )}
+                    </div>
+                    <h3 className="font-display font-semibold mb-2">{s.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{s.description}</p>
+                    <InquiryModal
+                      productName={s.title}
+                      trigger={<Button size="sm">Inquire Now</Button>}
+                    />
+                  </CardContent>
+                </Card>
+              ))}
             </div>
             <div className="text-center mt-8">
               <Link to="/services" className="text-primary text-sm font-medium hover:underline">
@@ -211,7 +211,7 @@ export default function HomePage() {
             <h2 className="font-display text-2xl md:text-3xl font-bold mb-8 text-center">What Our Customers Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {reviews.map((r) => (
-                <Card key={r.id} className="p-6">
+                <Card key={r.id} className="p-6 hover:shadow-md transition-shadow">
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} className={`h-5 w-5 ${i < r.rating ? "fill-warning text-warning" : "text-muted"}`} />
@@ -221,6 +221,11 @@ export default function HomePage() {
                   <p className="font-medium text-sm">— {r.name}</p>
                 </Card>
               ))}
+            </div>
+            <div className="text-center mt-6">
+              <Link to="/reviews" className="text-primary text-sm font-medium hover:underline">
+                See All Reviews →
+              </Link>
             </div>
           </div>
         </section>

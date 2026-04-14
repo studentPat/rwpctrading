@@ -3,12 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import InquiryModal from "@/components/InquiryModal";
 import { Button } from "@/components/ui/button";
-import { Wrench, Monitor, Laptop, Cpu, Settings, Paintbrush } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { motion } from "framer-motion";
-
-const iconMap: Record<string, any> = {
-  Wrench, Monitor, Laptop, Cpu, Settings, Paintbrush,
-};
 
 export default function ServicesPage() {
   const { data: services, isLoading } = useQuery({
@@ -23,14 +19,17 @@ export default function ServicesPage() {
     },
   });
 
+  const isIconUrl = (icon: string | null) => icon?.startsWith("http");
+
   return (
     <div>
       {/* Header */}
-      <div className="bg-primary text-primary-foreground py-12">
-        <div className="container mx-auto px-4 text-center">
+      <div className="relative bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground py-16">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiLz48cGF0aCBkPSJNMjAgMjBtLTEgMGExIDEgMCAxIDAgMiAwYTEgMSAwIDEgMC0yIDB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9nPjwvc3ZnPg==')] opacity-50" />
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">Our Services</h1>
           <p className="opacity-80 max-w-xl mx-auto">
-            Professional repair and installation services for computers, laptops, and peripherals. Our expert technicians are ready to help.
+            Professional repair and installation services for computers, laptops, and peripherals.
           </p>
         </div>
       </div>
@@ -48,31 +47,32 @@ export default function ServicesPage() {
           </div>
         ) : services && services.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((s, i) => {
-              const IconComp = iconMap[s.icon] || Wrench;
-              return (
-                <motion.div
-                  key={s.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <Card className="h-full text-center hover:shadow-lg transition-shadow">
-                    <CardContent className="p-8">
-                      <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-5">
-                        <IconComp className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="font-display font-semibold text-lg mb-3">{s.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-5">{s.description}</p>
-                      <InquiryModal
-                        productName={s.title}
-                        trigger={<Button size="sm">Inquire Now</Button>}
-                      />
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
+            {services.map((s, i) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <Card className="h-full text-center hover:shadow-lg transition-all hover:-translate-y-0.5">
+                  <CardContent className="p-8">
+                    <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-5 overflow-hidden">
+                      {isIconUrl(s.icon) ? (
+                        <img src={s.icon!} alt={s.title} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <Wrench className="h-8 w-8 text-primary" />
+                      )}
+                    </div>
+                    <h3 className="font-display font-semibold text-lg mb-3">{s.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-5">{s.description}</p>
+                    <InquiryModal
+                      productName={s.title}
+                      trigger={<Button size="sm">Inquire Now</Button>}
+                    />
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
         ) : (
           <div className="text-center py-16">

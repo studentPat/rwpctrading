@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, Mail, ExternalLink } from "lucide-react";
 import { ReactNode } from "react";
 
+const FB_PAGE = "https://www.facebook.com/profile.php?id=61575260983217";
+const MESSENGER = "https://m.me/61575260983217";
+const PHONE = "09687262353";
+const EMAIL = "rwpctrading@gmail.com";
+
 interface InquiryModalProps {
   productName: string;
   trigger?: ReactNode;
@@ -26,7 +31,7 @@ export default function InquiryModal({ productName, trigger }: InquiryModalProps
         </p>
         <div className="space-y-2">
           <a
-            href={`https://m.me/rwpctrading?text=${message}`}
+            href={`${MESSENGER}?text=${message}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
@@ -41,7 +46,7 @@ export default function InquiryModal({ productName, trigger }: InquiryModalProps
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </a>
           <a
-            href="https://facebook.com/rwpctrading"
+            href={FB_PAGE}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
@@ -56,23 +61,23 @@ export default function InquiryModal({ productName, trigger }: InquiryModalProps
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </a>
           <a
-            href="tel:+639000000000"
+            href={`tel:${PHONE}`}
             className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent transition-colors"
           >
             <Phone className="h-5 w-5 text-primary" />
             <div>
               <p className="font-medium text-sm">Phone</p>
-              <p className="text-xs text-muted-foreground">+63 XXX XXX XXXX</p>
+              <p className="text-xs text-muted-foreground">{PHONE}</p>
             </div>
           </a>
           <a
-            href={`mailto:rwpctrading@email.com?subject=Inquiry about ${productName}&body=${decodeURIComponent(message)}`}
+            href={`mailto:${EMAIL}?subject=Inquiry about ${productName}&body=${decodeURIComponent(message)}`}
             className="flex items-center gap-3 p-4 rounded-lg border hover:bg-accent transition-colors"
           >
             <Mail className="h-5 w-5 text-primary" />
             <div>
               <p className="font-medium text-sm">Email</p>
-              <p className="text-xs text-muted-foreground">rwpctrading@email.com</p>
+              <p className="text-xs text-muted-foreground">{EMAIL}</p>
             </div>
           </a>
         </div>

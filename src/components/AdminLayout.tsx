@@ -1,4 +1,4 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -6,8 +6,8 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar,
 } from "@/components/ui/sidebar";
 import { LayoutDashboard, Package, FolderOpen, Boxes, Star, MessageSquare, LogOut, Monitor, Wrench } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import rwLogo from "@/assets/rw-logo.jpg";
 
 const adminLinks = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -30,7 +30,7 @@ function AdminSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center gap-2 px-3 py-4">
-            <Monitor className="h-5 w-5" />
+            <img src={rwLogo} alt="RW" className="w-6 h-6 rounded object-cover" />
             {!collapsed && <span className="font-display font-bold">RW PC Admin</span>}
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -96,10 +96,10 @@ export default function AdminLayout() {
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-12 flex items-center border-b px-4">
+          <header className="h-12 flex items-center border-b px-4 bg-card">
             <SidebarTrigger />
           </header>
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-6 overflow-auto bg-background">
             <Outlet />
           </main>
         </div>
