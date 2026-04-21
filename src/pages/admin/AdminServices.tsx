@@ -9,8 +9,27 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Wrench, Upload, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Wrench, Upload, X, Monitor, Laptop, HardDrive, Cpu, MemoryStick, Keyboard, Mouse, Printer, Headphones, Wifi, Settings, ShieldCheck, Zap, Cable } from "lucide-react";
 import { toast } from "sonner";
+
+const PRESET_ICONS = [
+  "Wrench", "Monitor", "Laptop", "HardDrive", "Cpu", "MemoryStick",
+  "Keyboard", "Mouse", "Printer", "Headphones", "Wifi", "Settings",
+  "ShieldCheck", "Zap", "Cable",
+];
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Wrench, Monitor, Laptop, HardDrive, Cpu, MemoryStick,
+  Keyboard, Mouse, Printer, Headphones, Wifi, Settings,
+  ShieldCheck, Zap, Cable,
+};
+
+export const renderServiceIcon = (icon: string | null | undefined, className = "h-5 w-5 text-primary") => {
+  if (!icon) return <Wrench className={className} />;
+  if (icon.startsWith("http")) return <img src={icon} alt="" className="w-full h-full object-contain" />;
+  const Comp = ICON_MAP[icon] || Wrench;
+  return <Comp className={className} />;
+};
 
 interface ServiceForm {
   title: string;
