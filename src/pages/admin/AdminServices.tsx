@@ -212,6 +212,26 @@ export default function AdminServices() {
                 </div>
               </div>
               <div>
+                <Label>Or pick a preset icon</Label>
+                <div className="grid grid-cols-8 gap-2 mt-2">
+                  {PRESET_ICONS.map((name) => {
+                    const Comp = ICON_MAP[name];
+                    const selected = form.icon === name && !iconFile;
+                    return (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => { setIconFile(null); setForm({ ...form, icon: name }); }}
+                        className={`w-10 h-10 rounded border flex items-center justify-center transition hover:bg-accent ${selected ? "border-primary bg-accent ring-2 ring-primary/30" : "border-border"}`}
+                        title={name}
+                      >
+                        <Comp className="h-5 w-5 text-primary" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
                 <Label>Sort Order</Label>
                 <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
               </div>
@@ -251,7 +271,7 @@ export default function AdminServices() {
                       <img src={s.icon} alt="" className="w-10 h-10 rounded object-contain" />
                     ) : (
                       <div className="w-10 h-10 rounded bg-accent flex items-center justify-center">
-                        <Wrench className="h-5 w-5 text-primary" />
+                        {renderServiceIcon(s.icon)}
                       </div>
                     )}
                   </TableCell>
