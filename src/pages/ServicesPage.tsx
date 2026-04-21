@@ -5,6 +5,7 @@ import InquiryModal from "@/components/InquiryModal";
 import { Button } from "@/components/ui/button";
 import { Wrench } from "lucide-react";
 import { motion } from "framer-motion";
+import { renderServiceIcon } from "@/pages/admin/AdminServices";
 
 export default function ServicesPage() {
   const { data: services, isLoading } = useQuery({
@@ -57,11 +58,7 @@ export default function ServicesPage() {
                 <Card className="h-full text-center hover:shadow-lg transition-all hover:-translate-y-0.5">
                   <CardContent className="p-8">
                     <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-5 overflow-hidden">
-                      {isIconUrl(s.icon) ? (
-                        <img src={s.icon!} alt={s.title} className="w-full h-full object-contain p-1" />
-                      ) : (
-                        <Wrench className="h-8 w-8 text-primary" />
-                      )}
+                      {renderServiceIcon(s.icon, "h-8 w-8 text-primary")}
                     </div>
                     <h3 className="font-display font-semibold text-lg mb-3">{s.title}</h3>
                     <p className="text-sm text-muted-foreground mb-5">{s.description}</p>
