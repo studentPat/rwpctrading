@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Plus, Minus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import StockBadge from "@/components/StockBadge";
@@ -14,13 +15,24 @@ export default function AdminInventory() {
   const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [quantities, setQuantities] = useState<Record<string, string>>({});
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("qty-asc");
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ["admin-inventory", search],
+    queryKey: ["admin-inventory", search, statusFilter, sortBy],
     queryFn: async () => {
       let q = supabase.from("products").select("id, name, brand, stock_quantity, stock_status").eq("is_archived", false);
       if (search) q = q.or(`name.ilike.%${search}%,brand.ilike.%${search}%`);
-      const { data } = await q.order("stock_quantity", { ascending: true });
+      if (statusFilter !== "all") q = q.eq("stock_status", statusFilter);
+      const sortMap: Record<string, { col: string; asc: boolean }> = {
+        "qty-asc": { col: "stock_quantity", asc: true },
+        "qty-desc": { col: "stock_quantity", asc: false },
+        "name-asc": { col: "name", asc: true },
+        "name-desc": { col: "name", asc: false },
+        "brand-asc": { col: "brand", asc: true },
+      };
+      const s = sortMap[sortBy] ?? sortMap["qty-asc"];
+      const { data } = await q.order(s.col, { ascending: s.asc });
       return data ?? [];
     },
   });
@@ -62,9 +74,30 @@ export default function AdminInventory() {
     <div>
       <h1 className="font-display text-2xl font-bold mb-6">Inventory Management</h1>
 
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 max-w-sm" />
+      <div className="flex flex-wrap gap-3 mb-4">
+        <div className="relative flex-1 min-w-[220px] max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filter by status" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="Available">Available</SelectItem>
+            <SelectItem value="Limited Stock">Limited Stock</SelectItem>
+            <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Sort by" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="qty-asc">Quantity (Low → High)</SelectItem>
+            <SelectItem value="qty-desc">Quantity (High → Low)</SelectItem>
+            <SelectItem value="name-asc">Name (A → Z)</SelectItem>
+            <SelectItem value="name-desc">Name (Z → A)</SelectItem>
+            <SelectItem value="brand-asc">Brand (A → Z)</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="border rounded-lg overflow-auto">

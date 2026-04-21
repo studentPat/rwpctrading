@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
@@ -17,14 +16,6 @@ export default function AdminFeedback() {
       const { data } = await supabase.from("feedback").select("*").order("created_at", { ascending: false });
       return data ?? [];
     },
-  });
-
-  const toggleApproved = useMutation({
-    mutationFn: async ({ id, is_approved }: { id: string; is_approved: boolean }) => {
-      const { error } = await supabase.from("feedback").update({ is_approved, is_displayed: is_approved }).eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-feedback"] }),
   });
 
   const deleteMutation = useMutation({
@@ -50,13 +41,12 @@ export default function AdminFeedback() {
               <TableHead>Email</TableHead>
               <TableHead>Message</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Approved</TableHead>
               <TableHead className="w-20">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow><TableCell colSpan={6} className="text-center py-8">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center py-8">Loading...</TableCell></TableRow>
             ) : feedback && feedback.length > 0 ? feedback.map((f) => (
               <TableRow key={f.id}>
                 <TableCell className="font-medium">{f.name}</TableCell>
@@ -72,16 +62,13 @@ export default function AdminFeedback() {
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">{new Date(f.created_at).toLocaleDateString()}</TableCell>
                 <TableCell>
-                  <Switch checked={f.is_approved} onCheckedChange={(v) => toggleApproved.mutate({ id: f.id, is_approved: v })} />
-                </TableCell>
-                <TableCell>
                   <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(f.id)}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </TableCell>
               </TableRow>
             )) : (
-              <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No feedback yet.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No feedback yet.</TableCell></TableRow>
             )}
           </TableBody>
         </Table>

@@ -9,8 +9,27 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Wrench, Upload, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Wrench, Upload, X, Monitor, Laptop, HardDrive, Cpu, MemoryStick, Keyboard, Mouse, Printer, Headphones, Wifi, Settings, ShieldCheck, Zap, Cable } from "lucide-react";
 import { toast } from "sonner";
+
+const PRESET_ICONS = [
+  "Wrench", "Monitor", "Laptop", "HardDrive", "Cpu", "MemoryStick",
+  "Keyboard", "Mouse", "Printer", "Headphones", "Wifi", "Settings",
+  "ShieldCheck", "Zap", "Cable",
+];
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Wrench, Monitor, Laptop, HardDrive, Cpu, MemoryStick,
+  Keyboard, Mouse, Printer, Headphones, Wifi, Settings,
+  ShieldCheck, Zap, Cable,
+};
+
+export const renderServiceIcon = (icon: string | null | undefined, className = "h-5 w-5 text-primary") => {
+  if (!icon) return <Wrench className={className} />;
+  if (icon.startsWith("http")) return <img src={icon} alt="" className="w-full h-full object-contain" />;
+  const Comp = ICON_MAP[icon] || Wrench;
+  return <Comp className={className} />;
+};
 
 interface ServiceForm {
   title: string;
@@ -193,6 +212,26 @@ export default function AdminServices() {
                 </div>
               </div>
               <div>
+                <Label>Or pick a preset icon</Label>
+                <div className="grid grid-cols-8 gap-2 mt-2">
+                  {PRESET_ICONS.map((name) => {
+                    const Comp = ICON_MAP[name];
+                    const selected = form.icon === name && !iconFile;
+                    return (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => { setIconFile(null); setForm({ ...form, icon: name }); }}
+                        className={`w-10 h-10 rounded border flex items-center justify-center transition hover:bg-accent ${selected ? "border-primary bg-accent ring-2 ring-primary/30" : "border-border"}`}
+                        title={name}
+                      >
+                        <Comp className="h-5 w-5 text-primary" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
                 <Label>Sort Order</Label>
                 <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
               </div>
@@ -232,7 +271,7 @@ export default function AdminServices() {
                       <img src={s.icon} alt="" className="w-10 h-10 rounded object-contain" />
                     ) : (
                       <div className="w-10 h-10 rounded bg-accent flex items-center justify-center">
-                        <Wrench className="h-5 w-5 text-primary" />
+                        {renderServiceIcon(s.icon)}
                       </div>
                     )}
                   </TableCell>
