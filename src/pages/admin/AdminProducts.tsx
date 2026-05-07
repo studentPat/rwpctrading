@@ -9,7 +9,12 @@ import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, Pencil, Archive, Search, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Plus, Pencil, Archive, ArchiveRestore, Trash2, Search, Upload, X, Image as ImageIcon } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import StockBadge from "@/components/StockBadge";
 
@@ -33,6 +38,7 @@ const emptyForm: ProductForm = {
 export default function AdminProducts() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<"active" | "archived">("active");
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<ProductForm>(emptyForm);
@@ -50,9 +56,9 @@ export default function AdminProducts() {
   });
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ["admin-products", search],
+    queryKey: ["admin-products", search, view],
     queryFn: async () => {
-      let q = supabase.from("products").select("*, categories(name)").eq("is_archived", false);
+      let q = supabase.from("products").select("*, categories(name)").eq("is_archived", view === "archived");
       if (search) q = q.or(`name.ilike.%${search}%,brand.ilike.%${search}%`);
       const { data } = await q.order("created_at", { ascending: false });
       return data ?? [];
@@ -130,6 +136,29 @@ export default function AdminProducts() {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       toast.success("Product archived");
     },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("products").update({ is_archived: false }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success("Product restored");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success("Product deleted permanently");
+    },
+    onError: () => toast.error("Failed to delete product"),
   });
 
   const openEdit = (p: any) => {
@@ -265,9 +294,17 @@ export default function AdminProducts() {
         </Dialog>
       </div>
 
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 max-w-sm" />
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <Tabs value={view} onValueChange={(v) => setView(v as any)}>
+          <TabsList>
+            <TabsTrigger value="active">Active</TabsTrigger>
+            <TabsTrigger value="archived">Archived</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+        </div>
       </div>
 
       <div className="border rounded-lg overflow-auto">
@@ -304,10 +341,39 @@ export default function AdminProducts() {
                 <TableCell className="text-sm">{p.stock_quantity}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => archiveMutation.mutate(p.id)}>
-                      <Archive className="h-4 w-4 text-destructive" />
-                    </Button>
+                    {view === "active" ? (
+                      <>
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(p)} title="Edit">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => archiveMutation.mutate(p.id)} title="Archive">
+                          <Archive className="h-4 w-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <Button variant="ghost" size="icon" onClick={() => restoreMutation.mutate(p.id)} title="Restore">
+                        <ArchiveRestore className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" title="Delete permanently">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete this product?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This permanently removes "{p.name}" and its data. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => deleteMutation.mutate(p.id)}>Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>
