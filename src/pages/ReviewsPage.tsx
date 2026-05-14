@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Star, Send } from "lucide-react";
+import { Star, Send, ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -80,18 +80,37 @@ export default function ReviewsPage() {
             ) : reviews && reviews.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {reviews.map((r) => (
-                  <Card key={r.id} className="p-6">
-                    <div className="flex gap-0.5 mb-3">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-5 w-5 ${i < r.rating ? "fill-warning text-warning" : "text-muted"}`} />
-                      ))}
+                  <Card
+                    key={r.id}
+                    className="overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <div className="aspect-video w-full bg-muted overflow-hidden flex items-center justify-center">
+                      {r.image_url ? (
+                        <img
+                          src={r.image_url}
+                          alt={`Review by ${r.name}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                          <ImageIcon className="h-10 w-10 opacity-40" />
+                          <span className="text-xs">No image provided</span>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">"{r.comment}"</p>
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-sm">— {r.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(r.created_at).toLocaleDateString()}
-                      </p>
+                    <div className="p-6">
+                      <div className="flex gap-0.5 mb-3">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`h-5 w-5 ${i < r.rating ? "fill-warning text-warning" : "text-muted"}`} />
+                        ))}
+                      </div>
+                      {r.comment && <p className="text-sm text-muted-foreground mb-4">"{r.comment}"</p>}
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-sm">— {r.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(r.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
                   </Card>
                 ))}
