@@ -207,6 +207,7 @@ export type Database = {
           description: string | null
           icon: string | null
           id: string
+          image_url: string | null
           is_active: boolean
           sort_order: number | null
           title: string
@@ -217,6 +218,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean
           sort_order?: number | null
           title: string
@@ -227,6 +229,7 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          image_url?: string | null
           is_active?: boolean
           sort_order?: number | null
           title?: string

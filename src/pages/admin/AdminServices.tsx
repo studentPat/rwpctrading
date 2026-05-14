@@ -37,6 +37,7 @@ interface ServiceForm {
   icon: string;
   sort_order: number;
   is_active: boolean;
+  image_url: string;
 }
 
 const emptyForm: ServiceForm = {
@@ -45,6 +46,7 @@ const emptyForm: ServiceForm = {
   icon: "",
   sort_order: 0,
   is_active: true,
+  image_url: "",
 };
 
 export default function AdminServices() {
@@ -52,8 +54,10 @@ export default function AdminServices() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<ServiceForm>(emptyForm);
   const [iconFile, setIconFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
   const { data: services, isLoading } = useQuery({
@@ -77,22 +81,37 @@ export default function AdminServices() {
     return data.publicUrl;
   };
 
+  const uploadImage = async (serviceId: string, file: File): Promise<string> => {
+    const ext = file.name.split(".").pop();
+    const path = `services/${serviceId}/banner-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    if (error) throw error;
+    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
   const saveMutation = useMutation({
     mutationFn: async (data: ServiceForm) => {
       setUploading(true);
       if (editId) {
         let iconUrl = data.icon;
+        let imgUrl = data.image_url;
         if (iconFile) {
           iconUrl = await uploadIcon(editId, iconFile);
         }
-        const { error } = await supabase.from("services").update({ ...data, icon: iconUrl }).eq("id", editId);
+        if (imageFile) {
+          imgUrl = await uploadImage(editId, imageFile);
+        }
+        const { error } = await supabase.from("services").update({ ...data, icon: iconUrl, image_url: imgUrl }).eq("id", editId);
         if (error) throw error;
       } else {
         const { data: created, error } = await supabase.from("services").insert({ ...data, icon: data.icon || "Wrench" }).select().single();
         if (error) throw error;
-        if (iconFile && created) {
-          const iconUrl = await uploadIcon(created.id, iconFile);
-          await supabase.from("services").update({ icon: iconUrl }).eq("id", created.id);
+        if (created) {
+          const updates: any = {};
+          if (iconFile) updates.icon = await uploadIcon(created.id, iconFile);
+          if (imageFile) updates.image_url = await uploadImage(created.id, imageFile);
+          if (Object.keys(updates).length) await supabase.from("services").update(updates).eq("id", created.id);
         }
       }
       setUploading(false);
@@ -125,6 +144,7 @@ export default function AdminServices() {
     setForm(emptyForm);
     setEditId(null);
     setIconFile(null);
+    setImageFile(null);
   };
 
   const openEdit = (s: any) => {
@@ -135,8 +155,10 @@ export default function AdminServices() {
       icon: s.icon || "",
       sort_order: s.sort_order || 0,
       is_active: s.is_active,
+      image_url: s.image_url || "",
     });
     setIconFile(null);
+    setImageFile(null);
     setOpen(true);
   };
 
@@ -174,6 +196,37 @@ export default function AdminServices() {
               <div>
                 <Label>Description</Label>
                 <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
+              </div>
+              <div>
+                <Label>Service Image / Banner</Label>
+                <div className="flex items-center gap-3 mt-1">
+                  {(imageFile || form.image_url) && (
+                    <div className="relative w-28 h-20 rounded border overflow-hidden group">
+                      <img
+                        src={imageFile ? URL.createObjectURL(imageFile) : form.image_url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => { setImageFile(null); setForm({ ...form, image_url: "" }); }}
+                        className="absolute top-1 right-1 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    ref={imageRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => { if (e.target.files?.[0]) setImageFile(e.target.files[0]); }}
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => imageRef.current?.click()}>
+                    <Upload className="h-4 w-4 mr-1" /> Upload Image
+                  </Button>
+                </div>
               </div>
               <div>
                 <Label>Icon Image</Label>

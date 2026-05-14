@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import InquiryModal from "@/components/InquiryModal";
 import { Button } from "@/components/ui/button";
-import { Wrench } from "lucide-react";
+import { Wrench, ImageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { renderServiceIcon } from "@/pages/admin/AdminServices";
 
@@ -19,8 +19,6 @@ export default function ServicesPage() {
       return data ?? [];
     },
   });
-
-  const isIconUrl = (icon: string | null) => icon?.startsWith("http");
 
   return (
     <div>
@@ -55,16 +53,29 @@ export default function ServicesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
               >
-                <Card className="h-full text-center hover:shadow-lg transition-all hover:-translate-y-0.5">
-                  <CardContent className="p-8">
-                    <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-5 overflow-hidden">
-                      {renderServiceIcon(s.icon, "h-8 w-8 text-primary")}
+                <Card className="h-full overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden">
+                    {s.image_url ? (
+                      <img
+                        src={s.image_url}
+                        alt={s.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ImageIcon className="h-12 w-12 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden">
+                      {renderServiceIcon(s.icon, "h-8 w-8 text-primary-foreground")}
                     </div>
-                    <h3 className="font-display font-semibold text-lg mb-3">{s.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-5">{s.description}</p>
+                  </div>
+                  <CardContent className="pt-12 pb-6 px-6 text-center">
+                    <h3 className="font-display font-semibold text-lg mb-2">{s.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-5 line-clamp-3">{s.description}</p>
                     <InquiryModal
                       productName={s.title}
-                      trigger={<Button size="sm">Inquire Now</Button>}
+                      trigger={<Button size="sm" className="hover:scale-105 transition-transform">Inquire Now</Button>}
                     />
                   </CardContent>
                 </Card>

@@ -176,20 +176,33 @@ export default function HomePage() {
             <p className="text-muted-foreground text-center mb-10">Professional repair and installation services</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {services.map((s) => (
-                <Card key={s.id} className="text-center hover:shadow-lg transition-all hover:-translate-y-0.5">
-                  <CardContent className="p-6">
-                    <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                <Card key={s.id} className="overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden">
+                    {s.image_url ? (
+                      <img
+                        src={s.image_url}
+                        alt={s.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <ImageIcon className="h-10 w-10 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden">
                       {isIconUrl(s.icon) ? (
-                        <img src={s.icon!} alt={s.title} className="w-full h-full object-contain p-1" />
+                        <img src={s.icon!} alt="" className="w-full h-full object-contain p-1" />
                       ) : (
-                        <Wrench className="h-7 w-7 text-primary" />
+                        <Wrench className="h-7 w-7 text-primary-foreground" />
                       )}
                     </div>
+                  </div>
+                  <CardContent className="pt-10 pb-6 px-6 text-center">
                     <h3 className="font-display font-semibold mb-2">{s.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{s.description}</p>
                     <InquiryModal
                       productName={s.title}
-                      trigger={<Button size="sm">Inquire Now</Button>}
+                      trigger={<Button size="sm" className="hover:scale-105 transition-transform">Inquire Now</Button>}
                     />
                   </CardContent>
                 </Card>
