@@ -53,7 +53,7 @@ export default function ServicesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
               >
-                <Card className="h-full rounded-xl group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative">
+                <Card className="h-full rounded-xl group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden rounded-t-xl">
                     {s.image_url ? (
                       <img
@@ -67,10 +67,12 @@ export default function ServicesPage() {
                       </div>
                     )}
                   </div>
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden group-hover:scale-110 transition-transform duration-300" style={{ top: "calc(56.25% / 1 * 1)", transform: "translate(-50%, -50%)" }}>
-                    {renderServiceIcon(s.icon, "h-8 w-8 text-primary-foreground")}
+                  <div className="relative flex justify-center -mt-8 z-10">
+                    <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                      {renderServiceIcon(s.icon, "h-8 w-8 text-primary-foreground")}
+                    </div>
                   </div>
-                  <CardContent className="pt-12 pb-6 px-6 text-center">
+                  <CardContent className="pt-4 pb-6 px-6 text-center">
                     <h3 className="font-display font-semibold text-lg mb-2">{s.title}</h3>
                     <p className="text-sm text-muted-foreground mb-5 line-clamp-3">{s.description}</p>
                     <InquiryModal
