@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Monitor, Wrench, ShieldCheck, ArrowRight, Star, Cpu, CreditCard } from "lucide-react";
+import { Monitor, Wrench, ShieldCheck, ArrowRight, Star, Cpu, CreditCard, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -211,14 +211,28 @@ export default function HomePage() {
             <h2 className="font-display text-2xl md:text-3xl font-bold mb-8 text-center">What Our Customers Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {reviews.map((r) => (
-                <Card key={r.id} className="p-6 hover:shadow-md transition-shadow">
-                  <div className="flex gap-0.5 mb-3">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`h-5 w-5 ${i < r.rating ? "fill-warning text-warning" : "text-muted"}`} />
-                    ))}
+                <Card key={r.id} className="overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="aspect-video w-full bg-muted overflow-hidden flex items-center justify-center">
+                    {r.image_url ? (
+                      <img
+                        src={r.image_url}
+                        alt={`Review by ${r.name}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <ImageIcon className="h-10 w-10 text-muted-foreground/40" />
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">"{r.comment}"</p>
-                  <p className="font-medium text-sm">— {r.name}</p>
+                  <div className="p-6">
+                    <div className="flex gap-0.5 mb-3">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className={`h-5 w-5 ${i < r.rating ? "fill-warning text-warning" : "text-muted"}`} />
+                      ))}
+                    </div>
+                    {r.comment && <p className="text-sm text-muted-foreground mb-4">"{r.comment}"</p>}
+                    <p className="font-medium text-sm">— {r.name}</p>
+                  </div>
                 </Card>
               ))}
             </div>
