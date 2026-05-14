@@ -176,8 +176,8 @@ export default function HomePage() {
             <p className="text-muted-foreground text-center mb-10">Professional repair and installation services</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {services.map((s) => (
-                <Card key={s.id} className="overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden">
+                <Card key={s.id} className="group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden rounded-t-lg">
                     {s.image_url ? (
                       <img
                         src={s.image_url}
@@ -189,7 +189,9 @@ export default function HomePage() {
                         <ImageIcon className="h-10 w-10 text-muted-foreground/30" />
                       </div>
                     )}
-                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden">
+                  </div>
+                  <div className="relative flex justify-center -mt-7 z-10">
+                    <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden group-hover:scale-110 transition-transform duration-300">
                       {isIconUrl(s.icon) ? (
                         <img src={s.icon!} alt="" className="w-full h-full object-contain p-1" />
                       ) : (
@@ -197,7 +199,7 @@ export default function HomePage() {
                       )}
                     </div>
                   </div>
-                  <CardContent className="pt-10 pb-6 px-6 text-center">
+                  <CardContent className="pt-4 pb-6 px-6 text-center">
                     <h3 className="font-display font-semibold mb-2">{s.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{s.description}</p>
                     <InquiryModal

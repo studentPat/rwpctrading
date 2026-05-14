@@ -53,8 +53,8 @@ export default function ServicesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
               >
-                <Card className="h-full overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden">
+                <Card className="h-full rounded-lg group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden rounded-t-lg">
                     {s.image_url ? (
                       <img
                         src={s.image_url}
@@ -66,11 +66,13 @@ export default function ServicesPage() {
                         <ImageIcon className="h-12 w-12 text-muted-foreground/30" />
                       </div>
                     )}
-                    <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden">
+                  </div>
+                  <div className="relative flex justify-center -mt-8 z-10">
+                    <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden group-hover:scale-110 transition-transform duration-300">
                       {renderServiceIcon(s.icon, "h-8 w-8 text-primary-foreground")}
                     </div>
                   </div>
-                  <CardContent className="pt-12 pb-6 px-6 text-center">
+                  <CardContent className="pt-4 pb-6 px-6 text-center">
                     <h3 className="font-display font-semibold text-lg mb-2">{s.title}</h3>
                     <p className="text-sm text-muted-foreground mb-5 line-clamp-3">{s.description}</p>
                     <InquiryModal
