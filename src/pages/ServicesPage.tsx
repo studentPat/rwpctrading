@@ -53,8 +53,8 @@ export default function ServicesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
               >
-                <Card className="h-full rounded-xl group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden rounded-t-xl">
+                <Card className="h-full rounded-lg group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent overflow-hidden rounded-t-lg">
                     {s.image_url ? (
                       <img
                         src={s.image_url}
