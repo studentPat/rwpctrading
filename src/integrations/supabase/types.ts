@@ -176,6 +176,7 @@ export type Database = {
           comment: string | null
           created_at: string
           id: string
+          image_url: string | null
           is_approved: boolean
           name: string
           rating: number
@@ -184,6 +185,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          image_url?: string | null
           is_approved?: boolean
           name: string
           rating: number
@@ -192,6 +194,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          image_url?: string | null
           is_approved?: boolean
           name?: string
           rating?: number
