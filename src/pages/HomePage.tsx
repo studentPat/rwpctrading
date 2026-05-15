@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Monitor, Wrench, ShieldCheck, ArrowRight, Star, Cpu, CreditCard, ImageIcon } from "lucide-react";
+import { renderServiceIcon } from "@/pages/admin/AdminServices";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -192,11 +193,7 @@ export default function HomePage() {
                   </div>
                   <div className="relative flex justify-center -mt-7 z-10">
                     <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-lg ring-4 ring-background overflow-hidden group-hover:scale-110 transition-transform duration-300">
-                      {isIconUrl(s.icon) ? (
-                        <img src={s.icon!} alt="" className="w-full h-full object-contain p-1" />
-                      ) : (
-                        <Wrench className="h-7 w-7 text-primary-foreground" />
-                      )}
+                      {renderServiceIcon(s.icon, "h-7 w-7 text-primary-foreground")}
                     </div>
                   </div>
                   <CardContent className="pt-4 pb-6 px-6 text-center">
