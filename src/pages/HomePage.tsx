@@ -131,14 +131,17 @@ export default function HomePage() {
             </div>
             <p className="text-muted-foreground mb-8">Browse our latest computer parts and accessories</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((p) => (
-                <Card key={p.id} className="group overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5 border-border/50">
+              {featuredProducts.map((p) => {
+                const isSoldOut = p.stock_status === "Out of Stock";
+                return (
+                <Card key={p.id} className={`group overflow-hidden border-border/50 transition-all ${isSoldOut ? "opacity-75" : "hover:shadow-lg hover:-translate-y-0.5"}`}>
                   <div className="relative aspect-square bg-muted flex items-center justify-center overflow-hidden">
                     {p.images && p.images.length > 0 ? (
-                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <img src={p.images[0]} alt={p.name} className={`w-full h-full object-cover transition-transform duration-500 ${isSoldOut ? "grayscale" : "group-hover:scale-105"}`} loading="lazy" />
                     ) : (
                       <Monitor className="h-16 w-16 text-muted-foreground/20" />
                     )}
+                    {isSoldOut && <div className="absolute inset-0 bg-background/40" />}
                     <div className="absolute top-3 right-3 z-10">
                       <StockBadge status={p.stock_status} />
                     </div>
@@ -152,18 +155,30 @@ export default function HomePage() {
                     {p.show_price && p.price && (
                       <p className="font-display font-bold text-primary mt-2">₱{Number(p.price).toLocaleString()}</p>
                     )}
-                    <div className="flex gap-2 mt-3">
-                      <InquiryModal
-                        productName={p.name}
-                        trigger={<Button size="sm" className="flex-1">Inquire Now</Button>}
-                      />
-                      <Link to={`/catalog/${p.id}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full">Details</Button>
-                      </Link>
+                    <div className="mt-3">
+                      {isSoldOut ? (
+                        <div
+                          aria-disabled="true"
+                          className="w-full text-center py-2 rounded-md bg-destructive/10 text-destructive font-semibold text-sm tracking-wide uppercase border border-destructive/30 cursor-not-allowed select-none"
+                        >
+                          Sold Out
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <InquiryModal
+                            productName={p.name}
+                            trigger={<Button size="sm" className="flex-1">Inquire Now</Button>}
+                          />
+                          <Link to={`/catalog/${p.id}`} className="flex-1">
+                            <Button variant="outline" size="sm" className="w-full">Details</Button>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
