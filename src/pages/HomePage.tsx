@@ -132,14 +132,14 @@ export default function HomePage() {
             <p className="text-muted-foreground mb-8">Browse our latest computer parts and accessories</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((p) => (
-                <Card key={p.id} className="overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5 border-border/50">
-                  <div className="relative aspect-square bg-muted flex items-center justify-center">
+                <Card key={p.id} className="group overflow-hidden hover:shadow-lg transition-all hover:-translate-y-0.5 border-border/50">
+                  <div className="relative aspect-square bg-muted flex items-center justify-center overflow-hidden">
                     {p.images && p.images.length > 0 ? (
-                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" loading="lazy" />
+                      <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     ) : (
                       <Monitor className="h-16 w-16 text-muted-foreground/20" />
                     )}
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 right-3 z-10">
                       <StockBadge status={p.stock_status} />
                     </div>
                   </div>
