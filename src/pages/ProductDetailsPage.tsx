@@ -136,10 +136,19 @@ export default function ProductDetailsPage() {
           )}
 
           <div className="mt-8">
-            <InquiryModal
-              productName={product.name}
-              trigger={<Button size="lg" className="w-full sm:w-auto">Inquire Now</Button>}
-            />
+            {product.stock_status === "Out of Stock" ? (
+              <div
+                aria-disabled="true"
+                className="inline-block w-full sm:w-auto text-center px-8 py-3 rounded-md bg-destructive/10 text-destructive font-semibold tracking-wide uppercase border border-destructive/30 cursor-not-allowed select-none"
+              >
+                Sold Out
+              </div>
+            ) : (
+              <InquiryModal
+                productName={product.name}
+                trigger={<Button size="lg" className="w-full sm:w-auto">Inquire Now</Button>}
+              />
+            )}
           </div>
         </div>
       </div>
