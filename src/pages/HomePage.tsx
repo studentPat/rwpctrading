@@ -62,20 +62,21 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative text-primary-foreground py-24 md:py-36">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.75] to-[hsl(215,25%,12%)/0.4]" />
-        <div className="container mx-auto px-4 relative z-10">
+      <section className="relative text-primary-foreground py-24 md:py-36 overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url(${heroBg})` }} />
+        <div className="absolute inset-0 bg-slate-950/55 z-10" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-slate-900/30 to-transparent z-20" aria-hidden="true" />
+        <div className="container mx-auto px-4 relative z-30">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-shadow-hero">
               Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">Computer Shop</span>
             </h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8">
+            <p className="text-lg md:text-xl opacity-90 mb-8 text-shadow-hero-sm">
               Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
             </p>
             <div className="flex flex-wrap gap-3">

@@ -94,4 +94,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .text-shadow-hero {
+    text-shadow: 0 6px 24px rgba(2, 6, 23, 0.55);
+  }
+  .text-shadow-hero-sm {
+    text-shadow: 0 4px 16px rgba(2, 6, 23, 0.45);
+  }
 }
