@@ -62,30 +62,34 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative text-primary-foreground py-24 md:py-36">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.9] to-[hsl(215,25%,12%)/0.6]" />
-        <div className="container mx-auto px-4 relative z-10">
+      <section className="relative text-primary-foreground py-24 md:py-36 overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center z-0" style={{ backgroundImage: `url(${heroBg})` }} />
+        <div className="absolute inset-0 bg-slate-950/30 z-10" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/55 via-slate-950/25 to-transparent z-20" aria-hidden="true" />
+        <div className="container mx-auto px-4 relative z-30">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">Computer Shop</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-shadow-hero">
+              <span className="block text-white">Your Trusted</span>
+              <span className="block text-primary">Computer Shop</span>
             </h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8">
-              Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
+            <p className="text-lg md:text-xl opacity-95 mb-8 text-shadow-hero-sm">
+              Brand-new Computer and Laptop Parts and Accessories.
+              <br className="hidden sm:block" />
+              Also available Repair Services and Installations.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/catalog">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">
                   Browse Products
                 </Button>
               </Link>
               <Link to="/services">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">
                   Our Services
                 </Button>
               </Link>
