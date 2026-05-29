@@ -95,9 +95,9 @@
     -webkit-text-fill-color: transparent;
   }
   .text-shadow-hero {
-    text-shadow: 0 6px 24px rgba(2, 6, 23, 0.55);
+    text-shadow: 0 6px 18px rgba(15, 23, 42, 0.45);
   }
   .text-shadow-hero-sm {
-    text-shadow: 0 4px 16px rgba(2, 6, 23, 0.45);
+    text-shadow: 0 4px 14px rgba(15, 23, 42, 0.4);
   }
 }
