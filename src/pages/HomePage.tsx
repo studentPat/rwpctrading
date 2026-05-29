@@ -62,9 +62,9 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative text-primary-foreground py-24 md:py-36">
+      <section className="relative text-slate-900 py-24 md:py-36">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.9] to-[hsl(215,25%,12%)/0.6]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/45" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -72,10 +72,10 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]">
-              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-600 to-blue-300 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">Computer Shop</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-black">
+              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">Computer Shop</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/95 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] mb-8">
+            <p className="text-lg md:text-xl text-black mb-8">
               Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
             </p>
             <div className="flex flex-wrap gap-3">
