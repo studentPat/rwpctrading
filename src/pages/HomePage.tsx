@@ -62,9 +62,9 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative text-slate-900 py-24 md:py-36">
+      <section className="relative text-primary-foreground py-24 md:py-36">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-white/45" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(215,25%,12%)/0.75] to-[hsl(215,25%,12%)/0.4]" />
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -72,10 +72,10 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-black">
-              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">Computer Shop</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">Computer Shop</span>
             </h1>
-            <p className="text-lg md:text-xl text-black mb-8">
+            <p className="text-lg md:text-xl opacity-90 mb-8">
               Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
             </p>
             <div className="flex flex-wrap gap-3">
