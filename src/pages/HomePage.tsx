@@ -72,10 +72,10 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">Computer Shop</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]">
+              Your Trusted <span className="text-gradient bg-gradient-to-r from-blue-600 to-blue-300 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">Computer Shop</span>
             </h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8">
+            <p className="text-lg md:text-xl text-white/95 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] mb-8">
               Brand-new Computer and Laptop Parts and Accessories. Also available Repair Services and Installations.
             </p>
             <div className="flex flex-wrap gap-3">
