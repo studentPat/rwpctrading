@@ -32,7 +32,7 @@ interface ProductForm {
 
 const emptyForm: ProductForm = {
   name: "", category_id: "", brand: "", model: "", description: "",
-  price: "", show_price: false, warranty: "", stock_status: "Available",
+  price: "", show_price: false, warranty: "", stock_status: "Limited Stock",
 };
 
 export default function AdminProducts() {
@@ -103,6 +103,7 @@ export default function AdminProducts() {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
       } else {
+        payload.stock_quantity = 1;
         const { data: created, error } = await supabase.from("products").insert(payload).select().single();
         if (error) throw error;
         if (newFiles.length > 0 && created) {
